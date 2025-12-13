@@ -12,7 +12,9 @@ export interface PasarelaMessage {
 })
 export class PasarelaService {
   private socket: Socket | null = null;
-  private readonly PASARELA_URL = 'http://localhost:5000';
+  private readonly PASARELA_URL = (typeof window !== 'undefined' && window.location.origin.includes('localhost:8000')) 
+    ? 'http://localhost:5000' 
+    : (typeof window !== 'undefined' ? window.location.origin.replace(/:\d+$/, ':5000') : 'http://localhost:5000');
   
   // Signals para estado reactivo
   connected = signal(false);
