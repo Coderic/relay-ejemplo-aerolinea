@@ -1,0 +1,160 @@
+<div class="app">
+  <header>
+    <h1>✈️ SkyBooker</h1>
+    <p>Reserva de vuelos en tiempo real</p>
+    <div class="status" [class.online]="pasarela.connected()">
+      <span class="dot"></span>
+      {{ pasarela.connected() ? 'Conectado' : 'Desconectado' }}
+    </div>
+  </header>
+
+  <main>
+    <section class="vuelos">
+      <h2>🛫 Vuelos Disponibles</h2>
+      <div class="vuelos-grid">
+        @for (vuelo of vuelos; track vuelo.id) {
+          <div 
+            class="vuelo-card" 
+            [class.selected]="vueloSeleccionado()?.id === vuelo.id"
+            [class.business]="vuelo.clase === 'business'"
+            (click)="seleccionarVuelo(vuelo)"
+          >
+            <div class="vuelo-clase">{{ vuelo.clase | uppercase }}</div>
+            <div class="vuelo-ruta">
+              <div class="ciudad">{{ vuelo.origen }}</div>
+              <div class="icon">✈️</div>
+              <div class="ciudad">{{ vuelo.destino }}</div>
+            </div>
+            <div class="vuelo-detalles">
+              <span class="hora">🕐 {{ vuelo.hora }}</span>
+              <span class="precio">${{ vuelo.precio }}</span>
+            </div>
+            <div class="vuelo-disponibles">
+              {{ getDisponiblesVuelo(vuelo.id) }} asientos disponibles
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+
+    @if (vueloSeleccionado()) {
+      <section class="selector">
+        <h2>🪑 Selección de Asientos</h2>
+        
+        <div class="vuelo-info">
+          <div>
+            <strong>{{ vueloSeleccionado()!.origen }} → {{ vueloSeleccionado()!.destino }}</strong>
+          </div>
+          <div class="meta">
+            <span>{{ vueloSeleccionado()!.hora }}</span>
+            <span>•</span>
+            <span>{{ disponibles() }} disponibles</span>
+            <span>•</span>
+            <span>${{ vueloSeleccionado()!.precio }}/asiento</span>
+          </div>
+        </div>
+
+        <div class="avion-container">
+          <div class="avion-shape">
+            <!-- Nariz del avión -->
+            <div class="avion-nose"></div>
+            
+            <!-- Cabina del piloto -->
+            <div class="avion-cockpit"></div>
+            
+            <!-- Alas -->
+            <div class="avion-wings">
+              <div class="wing left"></div>
+              <div class="wing right"></div>
+            </div>
+            
+            <!-- Fuselaje con asientos -->
+            <div class="avion-fuselage">
+              <div class="cabin-section">
+                <div class="cabin-label">Economy</div>
+                <div class="seats-grid">
+                  @for (fila of getFilas(); track $index) {
+                    <div class="seat-row">
+                      @for (idx of fila.slice(0, 3); track idx) {
+                        <div 
+                          class="asiento"
+                          [class.disponible]="getAsientosVuelo(vueloSeleccionado()!.id)[idx] === 'disponible'"
+                          [class.reservado]="getAsientosVuelo(vueloSeleccionado()!.id)[idx] === 'reservado'"
+                          [class.vendido]="getAsientosVuelo(vueloSeleccionado()!.id)[idx] === 'vendido'"
+                          [class.seleccionado]="seleccionados().includes(idx)"
+                          (click)="toggleAsiento(idx)"
+                        >
+                          {{ getAsientoLabel(idx) }}
+                        </div>
+                      }
+                      <div class="pasillo"></div>
+                      @for (idx of fila.slice(3, 6); track idx) {
+                        <div 
+                          class="asiento"
+                          [class.disponible]="getAsientosVuelo(vueloSeleccionado()!.id)[idx] === 'disponible'"
+                          [class.reservado]="getAsientosVuelo(vueloSeleccionado()!.id)[idx] === 'reservado'"
+                          [class.vendido]="getAsientosVuelo(vueloSeleccionado()!.id)[idx] === 'vendido'"
+                          [class.seleccionado]="seleccionados().includes(idx)"
+                          (click)="toggleAsiento(idx)"
+                        >
+                          {{ getAsientoLabel(idx) }}
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+            
+            <!-- Cola del avión -->
+            <div class="avion-tail">
+              <div class="tail-wings">
+                <div class="tail-wing left"></div>
+                <div class="tail-wing right"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="leyenda">
+          <span><span class="dot disponible"></span> Disponible</span>
+          <span><span class="dot reservado"></span> Reservado</span>
+          <span><span class="dot vendido"></span> Ocupado</span>
+          <span><span class="dot seleccionado"></span> Seleccionado</span>
+        </div>
+
+        <div class="resumen">
+          <div class="asientos-seleccionados">
+            <strong>Asientos:</strong>
+            {{ getAsientosSeleccionadosTexto() }}
+          </div>
+          <div class="total">
+            Total: <strong>${{ total() }}</strong>
+          </div>
+        </div>
+
+        <button 
+          class="btn-reservar" 
+          [disabled]="seleccionados().length === 0"
+          (click)="reservar()"
+        >
+          {{ seleccionados().length > 0 
+            ? 'Reservar ' + seleccionados().length + ' asiento(s) - $' + total() 
+            : 'Selecciona asientos' }}
+        </button>
+      </section>
+    }
+
+    <section class="logs">
+      <h3>📋 Actividad en tiempo real</h3>
+      <div class="log-list">
+        @for (log of logs(); track $index) {
+          <div class="log-entry">
+            <span class="time">{{ log.time }}</span>
+            <span>{{ log.msg }}</span>
+          </div>
+        }
+      </div>
+    </section>
+  </main>
+</div>
