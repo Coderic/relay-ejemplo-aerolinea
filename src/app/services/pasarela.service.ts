@@ -12,9 +12,19 @@ export interface PasarelaMessage {
 })
 export class PasarelaService {
   private socket: Socket | null = null;
-  private readonly PASARELA_URL = (typeof window !== 'undefined' && window.location.origin.includes('localhost:8000')) 
-    ? 'http://localhost:5000' 
-    : (typeof window !== 'undefined' ? window.location.origin.replace(/:\d+$/, ':5000') : 'http://localhost:5000');
+  private readonly PASARELA_URL = this.getPasarelaUrl();
+  
+  private getPasarelaUrl(): string {
+    if (typeof window === 'undefined') {
+      return 'http://localhost:5000';
+    }
+    // Si estamos en localhost:8000, usar localhost:5000
+    if (window.location.hostname === 'localhost' && window.location.port === '8000') {
+      return 'http://localhost:5000';
+    }
+    // En otros casos, usar el mismo host pero puerto 5000
+    return `${window.location.protocol}//${window.location.hostname}:5000`;
+  }
   
   // Signals para estado reactivo
   connected = signal(false);
