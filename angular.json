@@ -57,6 +57,7 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/aerolinea/",
               "budgets": [
                 {
                   "type": "initial",
