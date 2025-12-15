@@ -1,59 +1,103 @@
-# RelayEjemploAerolinea
+# ✈️ SkyBooker - Reserva de Vuelos en Tiempo Real
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.3.
+Sistema de reserva de vuelos con disponibilidad en tiempo real construido con **Angular** y **[Relay Gateway](https://github.com/Coderic/Relay)**.
 
-## Development server
+![Angular](https://img.shields.io/badge/Angular-21-DD0031?logo=angular)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)
+![Relay](https://img.shields.io/badge/Relay-Gateway-blueviolet)
 
-To start a local development server, run:
+## 📖 Sobre este Ejemplo
+
+**SkyBooker** es un ejemplo funcional que demuestra cómo construir un sistema de reserva de vuelos con actualización de disponibilidad en tiempo real. Este ejemplo muestra:
+
+- ✈️ **Búsqueda de vuelos** - Selección de origen, destino y fechas
+- 🎫 **Reserva en tiempo real** - Los asientos disponibles se actualizan instantáneamente
+- ⚠️ **Prevención de overbooking** - Múltiples usuarios no pueden reservar el mismo asiento
+- 📊 **Dashboard de reservas** - Vista administrativa de todas las reservas activas
+- 🔔 **Notificaciones** - Alertas cuando se realizan nuevas reservas
+
+Este ejemplo pertenece a la colección de ejemplos de **[Relay Gateway](https://github.com/Coderic/Relay)**, un gateway de comunicación en tiempo real diseñado para ser inmutable y agnóstico.
+
+## 🚀 Inicio Rápido
+
+### Prerrequisitos
+
+- Node.js 18+
+- Angular CLI: `npm install -g @angular/cli`
+- Relay Gateway ejecutándose (ver [documentación de Relay](https://relay.coderic.net))
+
+### Instalación
 
 ```bash
+# Clonar el repositorio
+git clone https://github.com/Coderic/aerolinea.git
+cd aerolinea
+
+# Instalar dependencias
+npm install
+```
+
+### Configuración
+
+Asegúrate de tener Relay Gateway ejecutándose. Puedes usar el endpoint público para pruebas:
+
+```typescript
+// En tu código, el conector se conecta a:
+const relay = new RelayConector('http://demo.relay.coderic.net');
+```
+
+O ejecuta Relay localmente:
+
+```bash
+# Opción 1: Con npx (recomendado para pruebas)
+npx @coderic/relay
+
+# Opción 2: Con Docker Compose
+docker compose up -d
+```
+
+### Desarrollo
+
+```bash
+# Iniciar servidor de desarrollo
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Abre tu navegador en `http://localhost:4200`.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Producción
 
 ```bash
-ng generate component component-name
+# Construir para producción
+ng build --configuration production
+
+# Los archivos estarán en la carpeta dist/
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## 🎯 Uso
 
-```bash
-ng generate --help
-```
+1. **Abrir múltiples pestañas** para simular diferentes usuarios
+2. **Buscar vuelos** seleccionando origen, destino y fecha
+3. **Seleccionar asientos** - Observa cómo la disponibilidad se actualiza en tiempo real
+4. **Realizar reservas** - Los asientos se bloquean automáticamente para otros usuarios
+5. **Ver el dashboard** - Monitorea todas las reservas en tiempo real
 
-## Building
+## 🔗 Enlaces
 
-To build the project run:
+- 📦 [Repositorio](https://github.com/Coderic/aerolinea)
+- 🐛 [Issues](https://github.com/Coderic/aerolinea/issues)
+- 🌐 [Demo en línea](https://coderic.org/aerolinea/)
+- 📚 [Documentación de Relay](https://relay.coderic.net)
+- ⚡ [Relay Gateway](https://github.com/Coderic/Relay)
 
-```bash
-ng build
-```
+## 🛠️ Tecnologías
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+- **Angular** - Framework de aplicaciones web
+- **TypeScript** - Superset tipado de JavaScript
+- **Ionic** - Framework UI para aplicaciones móviles y web
+- **Relay Gateway** - Gateway de comunicación en tiempo real
+- **Socket.io** - Comunicación WebSocket
 
-## Running unit tests
+## 📝 Licencia
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+MIT
