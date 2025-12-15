@@ -1,0 +1,149 @@
+<div class="app-container">
+  <header class="header">
+    <h1>✈️ SkyBooker - Reserva de Vuelos</h1>
+    <div class="status">
+      <span [class.connected]="connected()" [class.disconnected]="!connected()">
+        {{ connected() ? '🟢 Conectado' : '🔴 Desconectado' }}
+      </span>
+      <span class="vuelo-info">
+        {{ vuelo().origen }} → {{ vuelo().destino }} | {{ vuelo().fecha }}
+      </span>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <!-- Panel de información del avión -->
+    <div class="airplane-info">
+      <div class="info-card">
+        <h3>Vuelo {{ vuelo().origen }}-{{ vuelo().destino }}</h3>
+        <p>Fecha: {{ vuelo().fecha }}</p>
+        <p>Asientos seleccionados: <strong>{{ getAsientosSeleccionadosTexto() }}</strong></p>
+        <div class="actions">
+          <button 
+            class="btn btn-primary" 
+            [disabled]="seleccionados().length === 0 || !connected()"
+            (click)="reservarAsientos()">
+            Reservar ({{ seleccionados().length }})
+          </button>
+          <button 
+            class="btn btn-secondary" 
+            [disabled]="seleccionados().length === 0"
+            (click)="limpiarSeleccion()">
+            Limpiar
+          </button>
+        </div>
+      </div>
+      
+      <div class="legend">
+        <div class="legend-item">
+          <div class="seat-legend disponible"></div>
+          <span>Disponible</span>
+        </div>
+        <div class="legend-item">
+          <div class="seat-legend seleccionado"></div>
+          <span>Seleccionado</span>
+        </div>
+        <div class="legend-item">
+          <div class="seat-legend ocupado"></div>
+          <span>Ocupado</span>
+        </div>
+        <div class="legend-item">
+          <div class="seat-legend ventana"></div>
+          <span>Ventana</span>
+        </div>
+        <div class="legend-item">
+          <div class="seat-legend pasillo"></div>
+          <span>Pasillo</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vista del avión -->
+    <div class="airplane-container">
+      <!-- Cabina del piloto -->
+      <div class="cockpit">
+        <div class="cockpit-window"></div>
+        <div class="cockpit-window"></div>
+      </div>
+
+      <!-- Cuerpo del avión -->
+      <div class="airplane-body">
+        <!-- Pasillo central -->
+        <div class="aisle"></div>
+        
+        <!-- Asientos lado izquierdo (A, B, C) -->
+        <div class="seats-left">
+          @for (filaNum of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]; track filaNum) {
+            <div class="seat-row">
+              <span class="row-number">{{ filaNum }}</span>
+              @for (letra of ['A', 'B', 'C']; track letra) {
+                @if (asientos(); as asientosList) {
+                  @for (asiento of asientosList; track asiento.numero) {
+                    @if (asiento.numero === (filaNum.toString() + letra)) {
+                      <button
+                        class="seat"
+                        [class.ventana]="asiento.tipo === 'ventana'"
+                        [class.pasillo]="asiento.tipo === 'pasillo'"
+                        [class.centro]="asiento.tipo === 'centro'"
+                        [class.disponible]="asiento.disponible && !asiento.ocupadoPor"
+                        [class.seleccionado]="asiento.seleccionado"
+                        [class.ocupado]="!asiento.disponible || asiento.ocupadoPor"
+                        [disabled]="!asiento.disponible || !!asiento.ocupadoPor"
+                        (click)="toggleAsiento($index)">
+                        <span class="seat-number">{{ asiento.numero }}</span>
+                      </button>
+                    }
+                  }
+                }
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Asientos lado derecho (D, E, F) -->
+        <div class="seats-right">
+          @for (filaNum of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]; track filaNum) {
+            <div class="seat-row">
+              @for (letra of ['D', 'E', 'F']; track letra) {
+                @if (asientos(); as asientosList) {
+                  @for (asiento of asientosList; track asiento.numero) {
+                    @if (asiento.numero === (filaNum.toString() + letra)) {
+                      <button
+                        class="seat"
+                        [class.ventana]="asiento.tipo === 'ventana'"
+                        [class.pasillo]="asiento.tipo === 'pasillo'"
+                        [class.centro]="asiento.tipo === 'centro'"
+                        [class.disponible]="asiento.disponible && !asiento.ocupadoPor"
+                        [class.seleccionado]="asiento.seleccionado"
+                        [class.ocupado]="!asiento.disponible || asiento.ocupadoPor"
+                        [disabled]="!asiento.disponible || !!asiento.ocupadoPor"
+                        (click)="toggleAsiento($index)">
+                        <span class="seat-number">{{ asiento.numero }}</span>
+                      </button>
+                    }
+                  }
+                }
+              }
+              <span class="row-number">{{ filaNum }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Cola del avión -->
+      <div class="tail">
+        <div class="tail-fin"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Panel de mensajes -->
+  <aside class="messages-panel">
+    <h3>Actividad</h3>
+    <div class="messages">
+      @for (msg of mensajes(); track $index) {
+        <div class="message">{{ msg }}</div>
+      }
+    </div>
+  </aside>
+</div>
